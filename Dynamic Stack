@@ -1,0 +1,148 @@
+
+#ifndef DYNAMIC_STACK_H
+#define DYNAMIC_STACK_H
+
+#ifndef nullptr
+#define nullptr 0
+#endif
+
+#include "Exception.h"
+#include <iostream>
+using namespace std;
+
+
+class Dynamic_stack {
+
+	private:
+		int *array;
+		int count;		
+		int array_size;
+		int initial_size;
+	
+	public:
+		Dynamic_stack(int = 10);
+		~Dynamic_stack();
+
+		int top() const;
+		int size() const;
+		bool empty() const;
+		int capacity() const;
+			
+		void push( int const & );
+		int pop();
+		void clear();		
+};
+
+Dynamic_stack::Dynamic_stack( int n ):
+count( 0 ),
+array_size( n ),
+initial_size(n)
+{
+     //initial an array that has array_size elements
+    if (array_size<1)
+    {array_size=1;
+        initial_size=1;}
+	array = new int[array_size];
+}
+
+
+Dynamic_stack::~Dynamic_stack() {
+    
+    //delete array
+    delete []array;
+}
+int Dynamic_stack::top() const {
+    //throw an underfow if array is empty
+    if (count<=0)
+        throw underflow();
+    //return the top of the array
+    return array[count-1];
+    
+}
+
+
+int Dynamic_stack::size() const {
+    //return the number of items in the array
+    return count;
+}
+
+
+bool Dynamic_stack::empty() const {
+    //return true if the array is empty
+    
+	if (count<=0)
+        return true;
+    else
+        return false;
+}
+
+
+int Dynamic_stack::capacity() const {
+    // return the number of items is capble of containing in one stack at this moment
+	
+	return array_size;
+}
+
+
+void Dynamic_stack::push( int const &obj ) {
+
+    //if the array is full, then create a new array with size is doubled iltems, and copy items to new array
+    int n=count;
+    if (n==array_size)
+    {   int b=2*n;
+        
+    //new a new array that size is doubled
+        int *newarray=new int[b];
+    
+    // copy items to new array
+        for (int i=0; i<n; i++)
+        {
+        newarray[i]=array[i];
+           
+        }
+    //add new item on top of the stack
+        newarray[n]=obj;
+        
+    }
+    
+    //add new item on top of the stack if the size of the array is not full
+   else
+    {
+        count=count+1;
+       
+        array[n]=obj;
+        
+        
+    }
+    
+
+}
+
+int Dynamic_stack::pop() {
+    //throw an underflow if the stack is empty
+    if (empty())
+        throw underflow();
+    //remove the item on the top of the stack, and return it
+    int deletelement=array[count-1];
+    count=count-1;
+    return deletelement;
+    
+    
+}
+
+void Dynamic_stack::clear() {
+    
+    // create new a new array if current array size is not equal to the initial size; and then delete original array
+    if (array_size!=initial_size){
+        int *newnewarray=new int[initial_size];
+        array_size=initial_size;
+        delete []array;
+        array=newnewarray;
+        
+    }
+    //if the size is equal to initial size, then delete array
+    else
+        delete []array;
+    
+}
+#endif
