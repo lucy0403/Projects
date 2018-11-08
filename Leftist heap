@@ -1,0 +1,188 @@
+
+
+#ifndef LEFTIST_HEAP_H
+#define LEFTIST_HEAP_H
+
+#ifndef nullptr
+#define nullptr 0
+#endif
+
+#include "Leftist_node.h"
+
+template <typename Type>
+class Leftist_heap {
+	private:
+		Leftist_node<Type> *root_node;
+		int heap_size;
+
+	public:
+		Leftist_heap();
+		~Leftist_heap();
+
+		void swap( Leftist_heap &heap );
+		
+
+		bool empty() const;
+		int size() const;
+		int null_path_length() const;
+		Type top() const;
+		int count( Type const & ) const;
+
+		void push( Type const & );
+		Type pop();
+		void clear();
+
+	// Friends
+
+	template <typename T>
+	friend std::ostream &operator<<( std::ostream &, Leftist_heap<T> const & );
+};
+
+// some sample functions are given
+
+template <typename Type>
+Leftist_heap<Type>::Leftist_heap():
+root_node( nullptr ),
+heap_size( 0 ) {
+	// does nothing
+}
+
+
+
+template <typename Type>
+Leftist_heap<Type>::~Leftist_heap() {
+	clear();  // might as well use it...
+}
+
+template <typename Type>
+void Leftist_heap<Type>::swap( Leftist_heap<Type> &heap ) {
+	std::swap( root_node, heap.root_node );
+	std::swap( heap_size, heap.heap_size );
+}
+
+template <typename Type>
+bool Leftist_heap<Type>::empty() const{
+    // Check if the heap is empty and return true if it is emoty
+    if(heap_size==0)
+    return true;
+    else
+    return false;
+}
+template<typename Type>
+int Leftist_heap<Type>::size() const{
+    // Return the number of nodes in the heap
+return heap_size;
+}
+
+template<typename Type>
+int Leftist_heap<Type>::null_path_length() const {
+    // Return the heap_null_path_length of the root node
+    
+    if(empty())
+    return -1;
+
+    else
+    {
+        return root_node->null_path_length();
+    
+    }
+        
+    
+    
+}
+
+
+template<typename Type>
+Type Leftist_heap<Type>::top() const{
+    // If the heap is empty throw underflow
+    
+    if(empty())
+    throw underflow();
+    // Otherwise, return the element of the root node
+    else{
+        return root_node->retrieve();}
+    
+}
+
+template<typename Type>
+int Leftist_heap<Type>::count(Type const &obj) const {
+    // Return the number of instances of obj in the heap
+   if (empty())
+   return -1;
+   else
+   return root_node->count(obj);
+}
+
+template<typename Type>
+void Leftist_heap<Type>::clear() {
+    // Call clear on the root node
+    root_node->clear();
+    // Reset the root node
+    // Reset the heap size
+    root_node=nullptr;
+    heap_size=0;
+}
+
+template<typename Type>
+void Leftist_heap<Type>::push(Type const &obj) {
+    // Create a new leftist node
+    Leftist_node<Type>* n =nullptr;
+    // Call push on the root node and pass the new node and root node as the arguments
+    n=new Leftist_node<Type>(obj);
+        root_node->push(n, root_node);
+    //Increament the heap size
+        heap_size++;
+    
+}
+    
+    template<typename Type>
+    Type Leftist_heap<Type>:: pop(){
+        // If the heap is empty throw underflow
+    
+        if(empty())
+        throw underflow();
+       
+      else
+      {  //set a variable to store the root_node;
+          Type nodevalue;
+          nodevalue=root_node->retrieve();
+          
+          //let copyl points to the left subtrees of root_node;
+          Leftist_node<Type> *copyl=root_node->left();
+        //let copyr points to theright subtrees of root_node;
+          Leftist_node<Type> *copyr=root_node->right();
+    
+          
+          delete root_node;
+          // The left sub-tree becomes the root node
+          root_node=copyl;
+          //The right sub-tree is pushed into the new root node
+          root_node->push(copyr,root_node);
+    
+          // Decrement the heap size
+          heap_size--;
+          // Return the element of the popped node
+          return nodevalue;
+        
+    }
+    }
+    
+// Your implementation here
+// STRONG HINT:  Write a default definition of each function, even if
+// it only returns the default value (false, 0, or Type()).
+//
+// Once you have done this, you can proceed and implement the member functions
+// one at a time.  If you do not, and just start implementing the member
+// functions so that you can't compile and test your function, good luck. :-)
+
+// You can modify this function however you want:  it will not be tested
+
+template <typename T>
+std::ostream &operator<<( std::ostream &out, Leftist_heap<T> const &heap ) {
+	return out;
+}
+
+// Is an error showing up in ece250.h or elsewhere?
+// Did you forget a closing '}' ?
+
+#endif
